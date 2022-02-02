@@ -15,6 +15,7 @@
     <description>Cucumber test based on spring boot</description>
     <properties>
         <java.version>1.8</java.version>
+        <io-rest-assured.version>4.0.0</io-rest-assured.version>
     </properties>
     <dependencies>
         <dependency>
@@ -52,7 +53,6 @@
             <version>2.6.1</version>
         </dependency>
 
-
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
@@ -74,21 +74,53 @@
             <artifactId>junit</artifactId>
             <version>4.13</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>junit</groupId>-->
-<!--            <artifactId>junit</artifactId>-->
-<!--            <version>4.13.2</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>io.cucumber</groupId>-->
-<!--            <artifactId>cucumber-junit-platform-engine</artifactId>-->
-<!--            <version>${cucumber.version}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${io-rest-assured.version}</version>
+        </dependency>
+        <!--Added required depeendencies due to : https://github.com/rest-assured/rest-assured/issues/1168 -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured-common</artifactId>
+            <version>${io-rest-assured.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${io-rest-assured.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>xml-path</artifactId>
+            <version>${io-rest-assured.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.17.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.3</version>
+        </dependency>
+
     </dependencies>
 
     <build>
+        <filters>
+<!--            <filter>profiles/${build.profile}/config.properties</filter>-->
+<!--            <filter>src/test/resources/config/${test.env}.properties</filter>-->
+        </filters>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/test/resources/config</directory>
+            </resource>
+        </resources>
       <plugins>
           <!--          Working plugin for test runner using sure fire-->
           <plugin>
@@ -105,6 +137,41 @@
           </plugin>
         </plugins>
     </build>
+    <profiles>
+        <!-- The configuration of the android -->
+        <profile>
+            <id>android</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile>android</build.profile>
+                <test.env>remote</test.env>
+            </properties>
+        </profile>
+        <!-- The configuration of the ios -->
+        <profile>
+            <id>ios</id>
+            <properties>
+                <build.profile>ios</build.profile>
+                <test.env>remote</test.env>
+            </properties>
+        </profile>
+        <!-- The configuration of the api -->
+        <profile>
+            <id>api</id>
+            <properties>
+                <build.profile>api</build.profile>
+                <test.env>remote</test.env>
+            </properties>
+        </profile> <!-- The configuration of the api -->
+        <profile>
+            <id>stb</id>
+            <properties>
+                <build.profile>stb</build.profile>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>
 
